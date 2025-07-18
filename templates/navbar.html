@@ -1,0 +1,27 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{{ url_for('index') }}">DriveIn</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<style>
+    .navbar a {
+        color: #012d39;
+    }
+    .navbar a:hover {
+        color: #1d5262;
+    }
+    .navbar a:active {
+        color: #4f8da0;
+    }
+</style>

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Login-DriveIn</title>
+{% endblock %}
+
+{% block style %}
+    <style>
+        body {
+            background-color: #012d39;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .card-container {
+            width: 1000px;
+            height: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            background-color: white;
+        }
+
+        .left-panel {
+            width: 50%;
+            background-image: linear-gradient(to right, #0a495c, #2b6a7b);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .right-panel {
+            width: 50%;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .btn-custom
+        {
+            background-color: #1d5262;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .btn-custom:hover {
+            background-color: #4f8da0;
+            color: white;
+        }
+
+        .btn-custom:active {
+            background-color: #1d5262;
+            color: white;
+        }
+
+        h3 {
+            color: #012d39;
+            font-weight: bold;
+        }
+
+        label {
+            color: #012d39;
+        }
+
+        p {
+            color: #012d399b;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="card-container d-flex shadow-lg">
+            <div class="left-panel d-flex flex-column justify-content-center text-white p-5">
+                <h2 class="fw-bold">Book your parking<br>quickly and easily<br>from anywhere.</h2>
+            </div>
+            <div class="right-panel d-flex flex-column justify-content-center p-5">
+                <h3>Login</h3>
+                <p>Welcome back to DriveIn</p>
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <input type="submit" value="Login" class="btn-custom w-100 fw-bold">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
