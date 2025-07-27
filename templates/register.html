@@ -6,68 +6,16 @@
 
 {% block style %}
     <style>
-        body {
-            background-color: #012d39;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .card-container {
-            width: 1000px;
-            height: 500px;
-            border-radius: 20px;
-            overflow: hidden;
-            background-color: white;
-        }
-
-        .left-panel {
-            width: 50%;
-            background-image: linear-gradient(to right, #0a495c, #2b6a7b);
-            background-size: cover;
-            background-position: center;
-        }
-
-        .right-panel {
-            width: 50%;
-            overflow-y: auto;
-        }
-
-        .form-control {
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 16px;
-        }
-
-        .btn-custom
-        {
-            background-color: #1d5262;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-
-        .btn-custom:hover {
-            background-color: #4f8da0;
-            color: white;
-        }
-
-        .btn-custom:active {
-            background-color: #1d5262;
-            color: white;
-        }
-
         h3 {
             color: #012d39;
             font-weight: bold;
         }
-
-        label {
-            color: #012d39;
-        }
-
         p {
             color: #012d399b;
+        }
+        .text-danger {
+            font-size: 0.9em;
+            margin-top: 2px;
         }
     </style>
 {% endblock %}
@@ -81,34 +29,160 @@
             <div class="right-panel p-5">
                 <h3>Get Started</h3>
                 <p>Welcome to DriveIn – Let's get started</p>
-                <form method="post">
+                <form id="form" method="post">
                 <div class="mb-3">
                     <label for="username" class="form-label">Email</label>
-                    <input type="email" id="username" name="username" class="form-control" placeholder="Enter a valid email" required>
+                    <input type="email" id="username" name="username" class="form-control">
+                    <small class="text-danger"></small>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Enter a password of length 8 or more" required>
+                    <input type="password" id="password" name="password" class="form-control">
+                    <small class="text-danger"></small>
                 </div>
                 <div class="mb-3">
                     <label for="fullname" class="form-label">Full Name</label>
-                    <input type="text" id="fullname" name="fullname" class="form-control" placeholder="Enter your full name" required>
+                    <input type="text" id="fullname" name="fullname" class="form-control">
+                    <small class="text-danger"></small>
                 </div>
                 <div class="mb-3">
                     <label for="phonenumber" class="form-label">Phone Number</label>
-                    <input type="text" id="phonenumber" name="phonenumber" class="form-control" placeholder="Enter your phone number" required>
+                    <input type="text" id="phonenumber" name="phonenumber" class="form-control">
+                    <small class="text-danger"></small>
                 </div>
                 <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
-                    <input type="text" id="address" name="address" class="form-control" placeholder="Enter your address" required>
+                    <input type="text" id="address" name="address" class="form-control">
+                    <small class="text-danger"></small>
                 </div>
                 <div class="mb-3">
                     <label for="pincode" class="form-label">Pincode</label>
-                    <input type="text" id="pincode" name="pincode" class="form-control" placeholder="Enter your pincode" required>
+                    <input type="text" id="pincode" name="pincode" class="form-control">
+                    <small class="text-danger"></small>
                 </div>
                 <input type="submit" value="Register" class="btn-custom w-100 fw-bold">
                 </form>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const form = document.getElementById('form');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+    const fullname = document.getElementById('fullname');
+    const phonenumber = document.getElementById('phonenumber');
+    const address = document.getElementById('address');
+    const pincode = document.getElementById('pincode');
+
+    username.addEventListener('input', () => validateEmail());
+    password.addEventListener('input', () => validatePassword());
+    fullname.addEventListener('input', () => validateFullname());
+    phonenumber.addEventListener('input', () => validatePhone());
+    address.addEventListener('input', () => validateAddress());
+    pincode.addEventListener('input', () => validatePincode());
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        let valid = true;
+        if (!validateEmail()) valid = false;
+        if (!validatePassword()) valid = false;
+        if (!validateFullname()) valid = false;
+        if (!validatePhone()) valid = false;
+        if (!validateAddress()) valid = false;
+        if (!validatePincode()) valid = false;
+        if (valid) form.submit();
+    });
+
+    function validateEmail() {
+        const value = username.value.trim();
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (value === '') {
+            setError(username, 'Email is required');
+            return false;
+        } else if (!pattern.test(value)) {
+            setError(username, 'Enter a valid email address');
+            return false;
+        } else {
+            clearError(username);
+            return true;
+        }
+    }
+
+    function validatePassword() {
+        const value = password.value.trim();
+        if (value === '') {
+            setError(password, 'Password is required');
+            return false;
+        } else if (value.length < 8) {
+            setError(password, 'Password should be at least 8 characters long');
+            return false;
+        } else {
+            clearError(password);
+            return true;
+        }
+    }
+
+    function validateFullname() {
+        if (fullname.value.trim() === '') {
+            setError(fullname, 'Full Name is required');
+            return false;
+        } else {
+            clearError(fullname);
+            return true;
+        }
+    }
+
+    function validatePhone() {
+        const value = phonenumber.value.trim();
+        const pattern = /^\d{10}$/;
+        if (value === '') {
+            setError(phonenumber, 'Phone Number is required');
+            return false;
+        } else if (!pattern.test(value)) {
+            setError(phonenumber, 'Enter a valid 10-digit phone number');
+            return false;
+        } else {
+            clearError(phonenumber);
+            return true;
+        }
+    }
+
+    function validateAddress() {
+        if (address.value.trim() === '') {
+            setError(address, 'Address is required');
+            return false;
+        } else {
+            clearError(address);
+            return true;
+        }
+    }
+
+    function validatePincode() {
+        const value = pincode.value.trim();
+        const pattern = /^\d{6}$/;
+        if (value === '') {
+            setError(pincode, 'Pincode is required');
+            return false;
+        } else if (!pattern.test(value)) {
+            setError(pincode, 'Enter a valid 6-digit pincode');
+            return false;
+        } else {
+            clearError(pincode);
+            return true;
+        }
+    }
+
+    function setError(element, message) {
+        const small = element.parentElement.querySelector('small');
+        small.innerText = message;
+    }
+
+    function clearError(element) {
+        const small = element.parentElement.querySelector('small');
+        small.innerText = '';
+    }
+</script>
 {% endblock %}

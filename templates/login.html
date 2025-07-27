@@ -6,65 +6,10 @@
 
 {% block style %}
     <style>
-        body {
-            background-color: #012d39;
-            font-family: 'Arial', sans-serif;
-        }
-
-        .card-container {
-            width: 1000px;
-            height: 500px;
-            border-radius: 20px;
-            overflow: hidden;
-            background-color: white;
-        }
-
-        .left-panel {
-            width: 50%;
-            background-image: linear-gradient(to right, #0a495c, #2b6a7b);
-            background-size: cover;
-            background-position: center;
-        }
-
-        .right-panel {
-            width: 50%;
-        }
-
-        .form-control {
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 16px;
-        }
-
-        .btn-custom
-        {
-            background-color: #1d5262;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-
-        .btn-custom:hover {
-            background-color: #4f8da0;
-            color: white;
-        }
-
-        .btn-custom:active {
-            background-color: #1d5262;
-            color: white;
-        }
-
         h3 {
             color: #012d39;
             font-weight: bold;
         }
-
-        label {
-            color: #012d39;
-        }
-
         p {
             color: #012d399b;
         }
@@ -81,18 +26,90 @@
             <div class="right-panel d-flex flex-column justify-content-center p-5">
                 <h3>Login</h3>
                 <p>Welcome back to DriveIn</p>
-                <form method="post">
+                <form id="form" method="post">
                     <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
+                        <label for="username" class="form-label">Username / Email</label>
+                        <input type="text" class="form-control" id="username" name="username">
+                        <small class="text-danger"></small>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
+                        <input type="password" class="form-control" id="password" name="password">
+                        <small class="text-danger"></small>
                     </div>
                     <input type="submit" value="Login" class="btn-custom w-100 fw-bold">
                 </form>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const form = document.getElementById('form');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+
+    username.addEventListener('input', () => validateEmail());
+    password.addEventListener('input', () => validatePassword());
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        let valid = true;
+        if (!validateEmail()) valid = false;
+        if (!validatePassword()) valid = false;
+        if (valid) form.submit();
+    });
+
+    function validateEmail() {
+        const value = username.value.trim();
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (value === 'admin') {
+            clearError(username);
+            return true;
+        }
+        
+        if (value === '') {
+            setError(username, 'Email is required');
+            return false;
+        } else if (!pattern.test(value)) {
+            setError(username, 'Enter a valid email address');
+            return false;
+        } else {
+            clearError(username);
+            return true;
+        }
+    }
+
+    function validatePassword() {
+        const value = password.value.trim();
+        
+        if (username.value.trim() === 'admin' && value === 'admin') {
+            clearError(password);
+            return true;
+        }
+        
+        if (value === '') {
+            setError(password, 'Password is required');
+            return false;
+        } else if (value.length < 8) {
+            setError(password, 'Password should be at least 8 characters long');
+            return false;
+        } else {
+            clearError(password);
+            return true;
+        }
+    }
+
+    function setError(element, message) {
+        const small = element.parentElement.querySelector('small');
+        small.innerText = message;
+    }
+
+    function clearError(element) {
+        const small = element.parentElement.querySelector('small');
+        small.innerText = '';
+    }
+</script>
 {% endblock %}

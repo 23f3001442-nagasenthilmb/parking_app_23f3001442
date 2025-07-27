@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="search-container" style="margin-top: 30px;">
+    <h2 class="mb-4">Search</h2>
+    <form method="GET" action="{{ url_for('search') }}" id="searchForm">
+        <div class="input-group">
+            <select class="form-select" id="searchType" name="type" style="max-width: 150px;" onchange="updatePlaceholder()">
+                <option value="lots" {% if search_type == 'lots' %}selected{% endif %}>Parking Lots</option>
+                <option value="users" {% if search_type == 'users' %}selected{% endif %}>Users</option>
+            </select>
+            <input type="text" class="form-control" id="searchQuery" name="q" placeholder="Enter search term..." value="{{ query }}">
+            <button class="btn btn-custom" type="submit">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+    </form>
+    {% if search_type == 'users' %}
+    <div class="table-responsive" style="margin-top: 30px;">
+        {% if results.get('users') %}
+            <table class="table table-custom">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                        <th>Phone Number</th>
+                        <th>Address</th>
+                        <th>Pincode</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in results['users'] %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.fullname }}</td>
+                        <td>{{ user.phonenumber }}</td>
+                        <td>{{ user.address }}</td>
+                        <td>{{ user.pincode }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info">
+                {% if query %}
+                    No users found matching "{{ query }}"
+                {% else %}
+                    No users found
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% if search_type == 'lots' %}
+    <div class="table-responsive" style="margin-top: 30px;">
+        {% if results.get('lots') %}
+            <table class="table table-custom">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Location</th>
+                        <th>Address</th>
+                        <th>Pincode</th>
+                        <th>Capacity</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lot in results['lots'] %}
+                    <tr>
+                        <td>{{ lot.location }}</td>
+                        <td>{{ lot.address }}</td>
+                        <td>{{ lot.pincode }}</td>
+                        <td>{{ lot.capacity }}</td>
+                        <td>₹{{ lot.price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info">
+                {% if query %}
+                    No parking lots found matching "{{ query }}"
+                {% else %}
+                    No parking lots found
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

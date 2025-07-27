@@ -8,7 +8,9 @@ load_dotenv()
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = os.getenv('SECRET_KEY', 'your_default_secret_key')
+app.secret_key = 'your_secret_key'  # Set a strong secret key for session management
+
+db = SQLAlchemy(app)
 
 import models
 import routes

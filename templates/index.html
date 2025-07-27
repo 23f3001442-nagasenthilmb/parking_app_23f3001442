@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <title>Home-DriveIn</title>
+    <title>User Dashboard - DriveIn</title>
 {% endblock %}
 
 {% block style %}
@@ -10,5 +10,198 @@
             background-color: #012d39;
             font-family: 'Arial', sans-serif;
         }
+        .parking-card {
+            transition: transform 0.2s;
+            color: #012d39;
+        }
+        .card-header, .card-body {
+            color: #012d39;
+        }
+        .parking-card:hover {
+            transform: translateY(-5px);
+        }
+        .status-available {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-occupied {
+            color: #dc3545;
+            font-weight: bold;
+        }
     </style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-white mb-4">Welcome, {{ user.fullname }}!</h2>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Find Parking</h5>
+                </div>
+                <div class="card-body">
+                    <form method="GET" action="{{ url_for('index') }}">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" name="location" placeholder="Search by location..." value="{{ request.args.get('location', '') }}">
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-control" name="price_range">
+                                    <option value="">All Prices</option>
+                                    <option value="0-50" {% if request.args.get('price_range') == '0-50' %}selected{% endif %}>₹0 - ₹50</option>
+                                    <option value="51-100" {% if request.args.get('price_range') == '51-100' %}selected{% endif %}>₹51 - ₹100</option>
+                                    <option value="101+" {% if request.args.get('price_range') == '101+' %}selected{% endif %}>₹101+</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <button type="submit" class="btn btn-custom">Search</button>
+                                <a href="{{ url_for('index') }}" class="btn btn-secondary">Clear</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h4 class="text-white mb-3">Available Parking Lots</h4>
+        </div>
+    </div>
+
+    {% if parking_lots %}
+    <div class="row">
+        {% for lot in parking_lots %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card parking-card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">{{ lot.location }}</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Address:</strong> {{ lot.address }}</p>
+                    <p><strong>Pincode:</strong> {{ lot.pincode }}</p>
+                    <p><strong>Price:</strong> ₹{{ lot.price }}/hour</p>
+                    <p><strong>Capacity:</strong> {{ lot.capacity }} spots</p>
+                    <p><strong>Available:</strong> 
+                        <span class="status-available">{{ lot.available_spots }} spots</span>
+                    </p>
+                    <p><strong>Occupied:</strong> 
+                        <span class="status-occupied">{{ lot.occupied_spots }} spots</span>
+                    </p>
+                    
+                    {% if lot.available_spots > 0 %}
+                    <a href="{{ url_for('book_parking', lot_id=lot.lot_id) }}" class="btn btn-custom">Book Parking</a>  
+                    {% else %}
+                    <button class="btn btn-secondary btn-sm" disabled>
+                        No Spots Available
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info">
+                <h5>No parking lots found</h5>
+                <p>There are currently no parking lots available matching your search criteria.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Your Recent Bookings</h5>
+                </div>
+                <div class="card-body">
+                    {% if user_bookings %}
+                        <div class="table-responsive">
+                            <table class="table table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Parking Lot</th>
+                                        <th>Spot ID</th>
+                                        <th>Vehicle Number</th>
+                                        <th>Parking Time</th>
+                                        <th>Leaving Time</th>
+                                        <th>Duration</th>
+                                        <th>Cost</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in user_bookings %}
+                                        <tr>
+                                            <td>{{ booking.id }}</td>
+                                            <td>
+                                                {% if booking.parking_lot %}
+                                                    {{ booking.parking_lot.location }}<br>
+                                                    <small class="text-muted">{{ booking.parking_lot.address }}</small>
+                                                {% else %}
+                                                    <span class="text-muted">Lot not found</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ booking.spot_id }}</td>
+                                            <td>{{ booking.vehicle_number }}</td>
+                                            <td>{{ booking.parking_timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                            <td>{{ booking.leaving_timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                            <td>
+                                                {% set duration = (booking.leaving_timestamp - booking.parking_timestamp).total_seconds() / 3600 %}
+                                                {% if duration <= 0 %}
+                                                    <span class="text-muted">Not Used</span>
+                                                {% else %}
+                                                    {{ "%.1f"|format(duration) }} hours
+                                                {% endif %}
+                                            </td>
+                                            <td>₹{{ booking.parking_cost }}</td>
+                                            <td>
+                                                {% if booking.leaving_timestamp > now %}
+                                                    <span class="badge bg-success">Active</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Completed</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if booking.leaving_timestamp > now %}
+                                                    <form method="POST" action="{{ url_for('release_spot', booking_id=booking.id) }}" style="display: inline;">
+                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to release this parking spot?')">
+                                                            Release Spot
+                                                        </button>
+                                                    </form>
+                                                {% else %}
+                                                    <span class="text-muted">Completed</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <h6>No bookings found</h6>
+                            <p class="mb-0">You haven't made any parking bookings yet. Book your first parking spot above!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

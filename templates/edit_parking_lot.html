@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block style %}
+    <style>
+        .form-label {
+            color: #012d39;
+        }
+        .btn-custom
+        {
+            background-color: #1d5262;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .btn-custom:hover {
+            background-color: #4f8da0;
+            color: white;
+        }
+
+        .btn-custom:active {
+            background-color: #1d5262;
+            color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4" style="min-width: 400px; max-width: 500px; width: 100%;">
+        <h2 class="mb-4 text-center" style="color: #012d39;">Edit Parking Lot</h2>
+        <form method="POST" action="{{ url_for('edit_parking_lot', lot_id=lot.lot_id) }}">
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input type="text" class="form-control" id="location" name="location" value="{{ lot.location }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price (per unit time)</label>
+                <input type="number" class="form-control" id="price" name="price" min="0" value="{{ lot.price }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <input type="text" class="form-control" id="address" name="address" value="{{ lot.address }}" required>
+            </div>
+            <div class="mb-3">
+                <label for="pincode" class="form-label">Pincode</label>
+                <input type="text" class="form-control" id="pincode" name="pincode" value="{{ lot.pincode }}" required pattern="\d{6}">
+            </div>
+            <div class="mb-3">
+                <label for="capacity" class="form-label">Capacity (Number of Spots)</label>
+                <input type="number" class="form-control" id="capacity" name="capacity" min="1" value="{{ lot.capacity }}" required>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn-custom">Update Lot</button>
+                <a href="{{ url_for('parking_lots') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

@@ -1,27 +1,41 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{{ url_for('index') }}">DriveIn</a>
+    {% if session.get('is_admin') %}
+      <a class="navbar-brand" href="{{ url_for('admin_dashboard') }}">DriveIn</a>
+    {% else %}
+      <a class="navbar-brand" href="{{ url_for('index') }}">DriveIn</a>
+    {% endif %}
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
+        {% if session.get('user') and session.get('is_admin') %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('parking_lots') }}">Parking Lots</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('view_users') }}">Users</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('search') }}">Search</a>
+          </li>
+        {% elif not session.get('user') %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+          </li>
+        {% endif %}
+      </ul>
+      {% if session.get('user') %}
+      <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+          <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+          <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
         </li>
       </ul>
+      {% endif %}
     </div>
   </div>
 </nav>
-
-<style>
-    .navbar a {
-        color: #012d39;
-    }
-    .navbar a:hover {
-        color: #1d5262;
-    }
-    .navbar a:active {
-        color: #4f8da0;
-    }
-</style>

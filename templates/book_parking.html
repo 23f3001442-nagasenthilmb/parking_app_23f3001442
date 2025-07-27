@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block style %}
+    <style>
+        .form-label {
+            color: #012d39;
+        }
+        .btn-custom
+        {
+            background-color: #1d5262;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .btn-custom:hover {
+            background-color: #4f8da0;
+            color: white;
+        }
+
+        .btn-custom:active {
+            background-color: #1d5262;
+            color: white;
+        }
+        .info-field {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            color: #012d39;
+            font-weight: bold;
+        }
+        .book-parking {
+            width: 1000px;
+            height: 600px;
+            overflow: auto;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="book-parking card shadow-lg p-4" style="min-width: 400px; max-width: 500px; width: 100%;">
+        <h2 class="mb-4 text-center" style="color: #012d39;">Book Parking Spot</h2>
+        
+        <div class="mb-4">
+            <h5 style="color: #012d39;">Parking Lot: {{ lot.location }}</h5>
+            <p class="text-muted">{{ lot.address }}</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('book_parking', lot_id=lot.lot_id) }}">
+            <div class="mb-3">
+                <label class="form-label">Spot ID</label>
+                <div class="info-field">{{ spot_id }}</div>
+                <input type="hidden" name="spot_id" value="{{ spot_id }}">
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Lot ID</label>
+                <div class="info-field">{{ lot.lot_id }}</div>
+                <input type="hidden" name="lot_id" value="{{ lot.lot_id }}">
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">User ID</label>
+                <div class="info-field">{{ session.user }}</div>
+                <input type="hidden" name="user_id" value="{{ session.user }}">
+            </div>
+                    
+            <div class="mb-3">
+                <label for="parking_time" class="form-label">Parking Start Time *</label>
+                <input type="datetime-local" class="form-control" id="parking_time" name="parking_time" required min="{{ now.strftime('%Y-%m-%dT%H:%M') }}">
+                <small class="form-text text-muted">Select when you want to start parking (cannot be in the past)</small>
+            </div>
+            
+            <div class="mb-3">
+                <label for="duration" class="form-label">Duration (Hours) *</label>
+                <input type="number" class="form-control" id="duration" name="duration" min="1" max="24" value="1" required>
+                <small class="form-text text-muted">Enter parking duration in hours (1-24)</small>
+            </div>
+            
+            <div class="mb-3">
+                <label for="vehicle_number" class="form-label">Vehicle Number *</label>
+                <input type="text" class="form-control" id="vehicle_number" name="vehicle_number" 
+                       placeholder="Enter vehicle number (e.g., KA-01-AB-1234)" required>
+                <small class="form-text text-muted">Please enter your vehicle registration number</small>
+            </div>
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn-custom">Book Parking Spot</button>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 
