@@ -55,7 +55,6 @@ class ReserveParkingSpot(db.Model):
     parking_cost = db.Column(db.Integer, nullable=False)
     vehicle_number = db.Column(db.String(20), nullable=False)
 
-
 with app.app_context():
     try:
         # Create tables if they don't exist
@@ -100,3 +99,4 @@ with app.app_context():
                 print(f'Failed to create admin user: {e2}')
     except Exception as e:
         print(f'Error during database setup: {e}') 
+

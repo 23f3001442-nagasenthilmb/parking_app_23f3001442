@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, url_for, flash, redirect, session
-from models import db, Admin, User, ParkingLot, ParkingSpot, ReserveParkingSpot
+from models.models import db, Admin, User, ParkingLot, ParkingSpot, ReserveParkingSpot
 from functools import wraps
 from datetime import datetime, timedelta
 
