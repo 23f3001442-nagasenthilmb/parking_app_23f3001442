@@ -12,5 +12,6 @@ app.secret_key = 'your_secret_key'  # Set a strong secret key for session manage
 
 db = SQLAlchemy(app)
 
-import models
-import routes
+from models.models import *
+
+from controllers.routes import *
