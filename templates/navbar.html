@@ -17,9 +17,12 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('search') }}">Search</a>
           </li>
+<<<<<<< HEAD
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a>
           </li>
+=======
+>>>>>>> 30c5d1bfd89f8e11235a36f8bd9486322fbae987
         {% elif not session.get('user') %}
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('login') }}">Login</a>
@@ -29,6 +32,7 @@
           </li>
         {% endif %}
       </ul>
+<<<<<<< HEAD
       {% if session.get('user') and not session.get('is_admin') %}
       <ul class="navbar-nav">
         <li class="nav-item">
@@ -36,6 +40,8 @@
         </li>
       </ul>
       {% endif %}
+=======
+>>>>>>> 30c5d1bfd89f8e11235a36f8bd9486322fbae987
       {% if session.get('user') %}
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
