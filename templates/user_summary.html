@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Parking Spot Status</h2>
+    <div class="card mt-4">
+        <div class="card-body">
+            <canvas id="spotsChart" width="400" height="300"></canvas>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-md-4 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Your Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Total Bookings: <strong>{{ user_stats.total_bookings }}</strong></li>
+                        <li class="list-group-item">Active Bookings: <strong>{{ user_stats.active_bookings }}</strong></li>
+                        <li class="list-group-item">Total Spent: <strong>₹{{ user_stats.total_spent }}</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const available_spots = {{ available_spots|tojson }};
+const occupied_spots = {{ occupied_spots|tojson }};
+const total_spots = {{ total_spots|tojson }};
+const ctx = document.getElementById('spotsChart').getContext('2d');
+const spotsChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Available Spots', 'Occupied Spots', 'Total Spots'],
+        datasets: [{
+            label: 'Number of Spots',
+            data: [available_spots, occupied_spots, total_spots],
+            backgroundColor: [
+                'lightgreen',
+                'lightcoral',
+                'lightblue'
+            ],
+            borderWidth: 1,
+            borderColor: '#000'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,51 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    {% if session.get('is_admin') %}
+      <a class="navbar-brand" href="{{ url_for('admin_dashboard') }}">DriveIn</a>
+    {% else %}
+      <a class="navbar-brand" href="{{ url_for('index') }}">DriveIn</a>
+    {% endif %}
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        {% if session.get('user') and session.get('is_admin') %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('parking_lots') }}">Parking Lots</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('view_users') }}">Users</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('search') }}">Search</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('admin_summary') }}">Summary</a>
+          </li>
+        {% elif not session.get('user') %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+          </li>
+        {% endif %}
+      </ul>
+      {% if session.get('user') and not session.get('is_admin') %}
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('user_summary') }}">Summary</a>
+        </li>
+      </ul>
+      {% endif %}
+      {% if session.get('user') %}
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+        </li>
+      </ul>
+      {% endif %}
+    </div>
+  </div>
+</nav>

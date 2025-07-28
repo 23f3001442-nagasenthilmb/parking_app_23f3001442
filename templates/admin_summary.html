@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Summary</h2>
+    
+    <div class="row mt-4">
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Revenue from each parking lot</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Summary on available and occupied parking lots</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="spotsChart" width="400" height="400"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+        
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+window.revenue_per_lot = {{ revenue_per_lot|tojson }};
+window.available_spots = {{ available_spots|tojson }};
+window.occupied_spots = {{ occupied_spots|tojson }};
+window.total_spots = {{ total_spots|tojson }};
+const revenue_per_lot = window.revenue_per_lot;
+const available_spots = window.available_spots;
+const occupied_spots = window.occupied_spots;
+const total_spots = window.total_spots;
+
+const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+const revenueChart = new Chart(revenueCtx, {
+    type: 'pie',
+    data: {
+        labels: revenue_per_lot.map(lot => lot.location),
+        datasets: [{
+            data: revenue_per_lot.map(lot => lot.revenue),
+            backgroundColor: [
+                'lightgreen',
+                'lightblue', 
+                'lightcoral',
+                'gold',
+                'lightpink'
+            ],
+            borderWidth: 2,
+            borderColor: '#fff'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.label + ': ₹' + context.parsed.toLocaleString();
+                    }
+                }
+            }
+        }
+    }
+});
+
+const spotsCtx = document.getElementById('spotsChart').getContext('2d');
+const spotsChart = new Chart(spotsCtx, {
+    type: 'bar',
+    data: {
+        labels: ['Available Spots', 'Occupied Spots', 'Total Spots'],
+        datasets: [{
+            label: 'Number of Spots',
+            data: [available_spots, occupied_spots, total_spots],
+            backgroundColor: [
+                'lightgreen',
+                'lightcoral', 
+                'lightblue'
+            ],
+            borderWidth: 1,
+            borderColor: '#000'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+});
+</script>
+
+<style>
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+canvas {
+    max-width: 100%;
+    height: auto;
+}
+</style>
+{% endblock %}

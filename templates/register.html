@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Get Started-DriveIn</title>
+{% endblock %}
+
+{% block style %}
+    <style>
+        h3 {
+            color: #012d39;
+            font-weight: bold;
+        }
+        p {
+            color: #012d399b;
+        }
+        .text-danger {
+            font-size: 0.9em;
+            margin-top: 2px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="card-container d-flex shadow-lg">
+            <div class="left-panel d-flex flex-column justify-content-center text-white p-5">
+                <h2 class="fw-bold">Book your parking<br>quickly and easily<br>from anywhere.</h2>
+            </div>
+            <div class="right-panel p-5">
+                <h3>Get Started</h3>
+                <p>Welcome to DriveIn – Let's get started</p>
+                <form id="form" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Email</label>
+                    <input type="email" id="username" name="username" class="form-control">
+                    <small class="text-danger"></small>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control">
+                    <small class="text-danger"></small>
+                </div>
+                <div class="mb-3">
+                    <label for="fullname" class="form-label">Full Name</label>
+                    <input type="text" id="fullname" name="fullname" class="form-control">
+                    <small class="text-danger"></small>
+                </div>
+                <div class="mb-3">
+                    <label for="phonenumber" class="form-label">Phone Number</label>
+                    <input type="text" id="phonenumber" name="phonenumber" class="form-control">
+                    <small class="text-danger"></small>
+                </div>
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" id="address" name="address" class="form-control">
+                    <small class="text-danger"></small>
+                </div>
+                <div class="mb-3">
+                    <label for="pincode" class="form-label">Pincode</label>
+                    <input type="text" id="pincode" name="pincode" class="form-control">
+                    <small class="text-danger"></small>
+                </div>
+                <input type="submit" value="Register" class="btn-custom w-100 fw-bold">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const form = document.getElementById('form');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+    const fullname = document.getElementById('fullname');
+    const phonenumber = document.getElementById('phonenumber');
+    const address = document.getElementById('address');
+    const pincode = document.getElementById('pincode');
+
+    username.addEventListener('input', () => validateEmail());
+    password.addEventListener('input', () => validatePassword());
+    fullname.addEventListener('input', () => validateFullname());
+    phonenumber.addEventListener('input', () => validatePhone());
+    address.addEventListener('input', () => validateAddress());
+    pincode.addEventListener('input', () => validatePincode());
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        let valid = true;
+        if (!validateEmail()) valid = false;
+        if (!validatePassword()) valid = false;
+        if (!validateFullname()) valid = false;
+        if (!validatePhone()) valid = false;
+        if (!validateAddress()) valid = false;
+        if (!validatePincode()) valid = false;
+        if (valid) form.submit();
+    });
+
+    function validateEmail() {
+        const value = username.value.trim();
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (value === '') {
+            setError(username, 'Email is required');
+            return false;
+        } else if (!pattern.test(value)) {
+            setError(username, 'Enter a valid email address');
+            return false;
+        } else {
+            clearError(username);
+            return true;
+        }
+    }
+
+    function validatePassword() {
+        const value = password.value.trim();
+        if (value === '') {
+            setError(password, 'Password is required');
+            return false;
+        } else if (value.length < 8) {
+            setError(password, 'Password should be at least 8 characters long');
+            return false;
+        } else {
+            clearError(password);
+            return true;
+        }
+    }
+
+    function validateFullname() {
+        if (fullname.value.trim() === '') {
+            setError(fullname, 'Full Name is required');
+            return false;
+        } else {
+            clearError(fullname);
+            return true;
+        }
+    }
+
+    function validatePhone() {
+        const value = phonenumber.value.trim();
+        const pattern = /^\d{10}$/;
+        if (value === '') {
+            setError(phonenumber, 'Phone Number is required');
+            return false;
+        } else if (!pattern.test(value)) {
+            setError(phonenumber, 'Enter a valid 10-digit phone number');
+            return false;
+        } else {
+            clearError(phonenumber);
+            return true;
+        }
+    }
+
+    function validateAddress() {
+        if (address.value.trim() === '') {
+            setError(address, 'Address is required');
+            return false;
+        } else {
+            clearError(address);
+            return true;
+        }
+    }
+
+    function validatePincode() {
+        const value = pincode.value.trim();
+        const pattern = /^\d{6}$/;
+        if (value === '') {
+            setError(pincode, 'Pincode is required');
+            return false;
+        } else if (!pattern.test(value)) {
+            setError(pincode, 'Enter a valid 6-digit pincode');
+            return false;
+        } else {
+            clearError(pincode);
+            return true;
+        }
+    }
+
+    function setError(element, message) {
+        const small = element.parentElement.querySelector('small');
+        small.innerText = message;
+    }
+
+    function clearError(element) {
+        const small = element.parentElement.querySelector('small');
+        small.innerText = '';
+    }
+</script>
+{% endblock %}

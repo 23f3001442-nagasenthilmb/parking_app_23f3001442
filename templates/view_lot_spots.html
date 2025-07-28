@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Parking Spots for {{ lot.location }}</h2>
+    <a href="{{ url_for('parking_lots') }}" class="btn btn-secondary mb-3">Back to Parking Lots</a>
+    <div class="table-responsive">
+        <table class="table table-custom">
+            <thead class="table-dark">
+                <tr>
+                    <th>Spot ID</th>
+                    <th>Status</th>
+                    <th>User Details</th>
+                    <th>Vehicle Number</th>
+                    <th>Parking Time</th>
+                    <th>Leaving Time</th>
+                    <th>Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for spot in spots %}
+                <tr>
+                    <td>{{ spot.spot_id }}</td>
+                    <td>
+                        {% if spot.status == 'A' %}
+                            <span class="badge bg-success">Available</span>
+                        {% else %}
+                            <span class="badge bg-danger">Occupied</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if spot.status == 'O' and spot.user %}
+                            <strong>{{ spot.user.fullname }}</strong><br>
+                            <small class="text-muted">{{ spot.user.username }}</small><br>
+                            <small class="text-muted">{{ spot.user.phonenumber }}</small>
+                        {% else %}  
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if spot.status == 'O' and spot.current_booking %}
+                            {{ spot.current_booking.vehicle_number }}
+                        {% elif spot.status == 'O' %}
+                            <span class="text-warning">No active booking</span>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if spot.status == 'O' and spot.current_booking %}
+                            {{ spot.current_booking.parking_timestamp.strftime('%Y-%m-%d %H:%M') }}
+                        {% elif spot.status == 'O' %}
+                            <span class="text-warning">-</span>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if spot.status == 'O' and spot.current_booking %}
+                            {{ spot.current_booking.leaving_timestamp.strftime('%Y-%m-%d %H:%M') }}
+                        {% elif spot.status == 'O' %}
+                            <span class="text-warning">-</span>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if spot.status == 'O' and spot.current_booking %}
+                            ₹{{ spot.current_booking.parking_cost }}
+                        {% elif spot.status == 'O' %}
+                            <span class="text-warning">-</span>
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>Login-DriveIn</title>
+{% endblock %}
+
+{% block style %}
+    <style>
+        h3 {
+            color: #012d39;
+            font-weight: bold;
+        }
+        p {
+            color: #012d399b;
+        }
+
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="card-container d-flex shadow-lg">
+            <div class="left-panel d-flex flex-column justify-content-center text-white p-5">
+                <h2 class="fw-bold">Book your parking<br>quickly and easily<br>from anywhere.</h2>
+            </div>
+            <div class="right-panel d-flex flex-column justify-content-center p-5">
+                <h3>Login</h3>
+                <p>Welcome back to DriveIn</p>
+                <form id="form" method="post">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username / Email</label>
+                        <input type="text" class="form-control" id="username" name="username">
+                        <small class="text-danger"></small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password">
+                        <small class="text-danger"></small>
+                    </div>
+                    <input type="submit" value="Login" class="btn-custom w-100 fw-bold">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const form = document.getElementById('form');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+
+    username.addEventListener('input', () => validateEmail());
+    password.addEventListener('input', () => validatePassword());
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        let valid = true;
+        if (!validateEmail()) valid = false;
+        if (!validatePassword()) valid = false;
+        if (valid) form.submit();
+    });
+
+    function validateEmail() {
+        const value = username.value.trim();
+        const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (value === 'admin') {
+            clearError(username);
+            return true;
+        }
+        
+        if (value === '') {
+            setError(username, 'Email is required');
+            return false;
+        } else if (!pattern.test(value)) {
+            setError(username, 'Enter a valid email address');
+            return false;
+        } else {
+            clearError(username);
+            return true;
+        }
+    }
+
+    function validatePassword() {
+        const value = password.value.trim();
+        
+        if (username.value.trim() === 'admin' && value === 'admin') {
+            clearError(password);
+            return true;
+        }
+        
+        if (value === '') {
+            setError(password, 'Password is required');
+            return false;
+        } else if (value.length < 8) {
+            setError(password, 'Password should be at least 8 characters long');
+            return false;
+        } else {
+            clearError(password);
+            return true;
+        }
+    }
+
+    function setError(element, message) {
+        const small = element.parentElement.querySelector('small');
+        small.innerText = message;
+    }
+
+    function clearError(element) {
+        const small = element.parentElement.querySelector('small');
+        small.innerText = '';
+    }
+</script>
+{% endblock %}
