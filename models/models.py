@@ -55,7 +55,6 @@ class ReserveParkingSpot(db.Model):
     parking_cost = db.Column(db.Integer, nullable=False)
     vehicle_number = db.Column(db.String(20), nullable=False)
 
-<<<<<<< HEAD
 
 with app.app_context():
     try:
@@ -84,50 +83,3 @@ with app.app_context():
             print('Admin user already exists')
     except Exception as e:
         print(f'Error during database setup: {e}')
-=======
-with app.app_context():
-    try:
-        # Create tables if they don't exist
-        db.create_all()
-        
-        # Check if admin user exists using a safer approach
-        try:
-            admin = User.query.filter_by(username='admin').first()
-            if not admin:
-                # Create admin user
-                admin = User(
-                    username='admin',
-                    password='admin',
-                    fullname='Administrator',
-                    phonenumber='0000000000',
-                    address='System Address',
-                    pincode='000000',
-                    is_admin=True
-                )
-                db.session.add(admin)
-                db.session.commit()
-                print('Admin user created successfully')
-            else:
-                print('Admin user already exists')
-        except Exception as e:
-            print(f'Error checking/creating admin user: {e}')
-            # Try to create admin user anyway
-            try:
-                admin = User(
-                    username='admin',
-                    password='admin',
-                    fullname='Administrator',
-                    phonenumber='0000000000',
-                    address='System Address',
-                    pincode='000000',
-                    is_admin=True
-                )
-                db.session.add(admin)
-                db.session.commit()
-                print('Admin user created after error recovery')
-            except Exception as e2:
-                print(f'Failed to create admin user: {e2}')
-    except Exception as e:
-        print(f'Error during database setup: {e}') 
-
->>>>>>> 30c5d1bfd89f8e11235a36f8bd9486322fbae987
